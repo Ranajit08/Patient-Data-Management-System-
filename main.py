@@ -1,11 +1,14 @@
 from tkinter import * 
+from tkinter import messagebox
 from tkinter import ttk
 import tkinter.font as font
 import datetime
 
+dataset = ["CBC", "Fasting Blood Suger", "Lipid Profile", "LFT", "HBsAg"]
+
 def data():
-    data = ["CBC", "Fasting Blood Suger", "Lipid Profile", "LFT", "HBsAg"]
-    return data
+    global dataset
+    return dataset 
 
 def datev():
     today = datetime.date.today()
@@ -31,7 +34,6 @@ def gui():
     window.geometry("550x500")
     window.config(bg="#abcbff")
 
-    # tabs 
     style = ttk.Style()
     style.theme_use("default")
     style.configure("TNotebook.Tab", font=my_font, background= "#abcbff", padding= [10,5])
@@ -48,8 +50,9 @@ def gui():
     
     notebook.pack(expand=True, fill="both")
     
-
-    frame1 = Frame(tab1, bg="#abcbff")
+    tab1_frame = Frame(tab1, bg="#abcbff" )
+    tab1_frame.pack(expand = True)
+    frame1 = Frame(tab1_frame, bg="#abcbff")
     frame1.grid(row=0, column=0, ipadx=1, ipady=1)
 
     Label(frame1, text= "", bg="#abcbff").grid(row=0, column=0, columnspan=6)                                                  
@@ -66,17 +69,23 @@ def gui():
     date.grid(row=1, column=1, ipadx=1, ipady=1)
     d = datev()
     date.insert(0, d)
-    name = Entry(frame1, font=('Arial', 11)).grid(row=2, column=1, ipadx=1, ipady=1)
-    age = Entry(frame1, font=('Arial', 11)).grid(row=2, column=3, ipadx=1, ipady=1)
-    gender = ttk.Combobox(frame1, values=["Male", "Female", "Others"], state="readonly", font=('Arial', 10)).grid(row=3, column=1, ipadx=5, ipady=1)
-    address = Entry(frame1, font=('Arial', 11)).grid(row=3, column=3, ipadx=1, ipady=1)
-    ph = Entry(frame1, font=("Arial", 11)).grid(row=4, column=1, ipadx=1, ipady=1)
-    center = Entry(frame1, font=('Arial', 11)).grid(row=4, column=3, ipadx=1, ipady=1)
+    name = Entry(frame1, font=('Arial', 11))
+    name.grid(row=2, column=1, ipadx=1, ipady=1)
+    age = Entry(frame1, font=('Arial', 11))
+    age.grid(row=2, column=3, ipadx=1, ipady=1)
+    gender = ttk.Combobox(frame1, values=["Male", "Female", "Others"], state="readonly", font=('Arial', 10))
+    gender.grid(row=3, column=1, ipadx=5, ipady=1)
+    address = Entry(frame1, font=('Arial', 11))
+    address.grid(row=3, column=3, ipadx=1, ipady=1)
+    ph = Entry(frame1, font=("Arial", 11))
+    ph.grid(row=4, column=1, ipadx=1, ipady=1)
+    center = Entry(frame1, font=('Arial', 11))
+    center.grid(row=4, column=3, ipadx=1, ipady=1)
 
     val = data()
 
 
-    frame2 = Frame(tab1, bg="#abcbff")
+    frame2 = Frame(tab1_frame, bg="#abcbff")
     frame2.grid(row=1, column=0, ipadx=0, ipady=0)
 
     Label(frame2, text= "Tests", font=my_font, bg="#abcbff").grid(row=0, column=0, ipadx=0, ipady=0)
@@ -93,12 +102,59 @@ def gui():
     t = Label(frame2, font=my_font, borderwidth=2, text="0000", relief='sunken', bg="#ffffff").grid(row=3, column=2, ipadx=1, ipady=1)
     Button(frame2, text="Calculate", font=my_font, command=remove_func, bg="#4c78be", fg="white").grid(row=3, column=3, ipadx=1, ipady=1)
 
-    frame4 = Frame(tab1, bg="#abcbff")
+    def clear_all():
+        da = date.get()
+        if da:
+            date.delete(0, END)
+            date.insert(0, d)
+        else:
+            date.insert(0, d)
+        n = name.get()
+        if n:
+            name.delete(0, END)
+        a = age.get()
+        if a:
+            age.delete(0, END)
+        ad = address.get()
+        if ad:
+            address.delete(0, END)
+        p = ph.get()
+        if p:
+            ph.delete(0, END)
+        c = center.get()
+        if c:
+            center.delete(0, END)
+        list.delete(0, END)
+
+    def save():
+        i_date = date.get()
+        i_name = name.get()
+        i_age = age.get()
+        i_gender = gender.get()
+        i_address = address.get()
+        i_ph = ph.get()
+        i_center = center.get()  
+        i_list = list.get(0, END)
+
+        if all([ i_date, i_name, i_age, i_gender, i_address, i_ph, i_center, i_list]):
+            print("all right.")
+        
+        else:
+            if i_date and not any([i_name, i_age, i_gender, i_address, i_ph, i_center, i_list]):
+                messagebox.showerror("Error", "Some fields are blank :(")
+            else:
+                messagebox.showerror("Error", "Some fields are blank :(")
+
+
+    frame4 = Frame(tab1_frame, bg="#abcbff")
     frame4.grid(row=3, column=0, ipadx=0, ipady=0)
-    Label(frame4, text=" ", bg="#abcbff").grid(row=0, column=0, ipadx=0, ipady=0, columnspan=3)
-    Button(frame4, text="Print", font=my_font, bg="#4c78be", fg="white").grid(row=1, column=0, ipadx=5, ipady=0)
+    Label(frame4, text="", bg="#abcbff").grid(row=0, column=0, ipadx=15, ipady=0, columnspan=5)
+    Button(frame4, text="Clear All", font=my_font, bg="#4c78be", fg="white", command=clear_all).grid(row=1, column=0, ipadx=5, ipady=0)
     Label(frame4, text="", bg="#abcbff").grid(row=1, column=1, ipadx=15, ipady=0)
-    Button(frame4, text="Save", font=my_font, bg="#4c78be", fg="white").grid(row=1, column=2, ipadx=5, ipady=0)
+    Button(frame4, text="Print", font=my_font, bg="#4c78be", fg="white").grid(row=1, column=2, ipadx=5, ipady=0)
+    Label(frame4, text="", bg="#abcbff").grid(row=1, column=3, ipadx=15, ipady=0)
+    Button(frame4, text="Save", font=my_font, bg="#4c78be", fg="white", command=save).grid(row=1, column=4, ipadx=5, ipady=0)
+    
 
 
     window.mainloop()
