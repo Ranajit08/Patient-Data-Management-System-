@@ -2,20 +2,10 @@ from tkinter import *
 from tkinter import messagebox
 from tkinter import ttk
 import tkinter.font as font
-import datetime
-
-dataset = ["CBC", "Fasting Blood Suger", "Lipid Profile", "LFT", "HBsAg"]
-
-def data():
-    global dataset
-    return dataset 
-
-def datev():
-    today = datetime.date.today()
-    return today
-
+from logics import data_logic
 
 def gui():
+
     def list_func():
         t = tests.get()
         if t:
@@ -67,7 +57,7 @@ def gui():
 
     date = Entry(frame1, font=('Arial', 11))
     date.grid(row=1, column=1, ipadx=1, ipady=1)
-    d = datev()
+    d = data_logic.datev()
     date.insert(0, d)
     name = Entry(frame1, font=('Arial', 11))
     name.grid(row=2, column=1, ipadx=1, ipady=1)
@@ -82,8 +72,7 @@ def gui():
     center = Entry(frame1, font=('Arial', 11))
     center.grid(row=4, column=3, ipadx=1, ipady=1)
 
-    val = data()
-
+    val = data_logic.data()
 
     frame2 = Frame(tab1_frame, bg="#abcbff")
     frame2.grid(row=1, column=0, ipadx=0, ipady=0)
@@ -91,17 +80,35 @@ def gui():
     Label(frame2, text= "Tests", font=my_font, bg="#abcbff").grid(row=0, column=0, ipadx=0, ipady=0)
     tests = ttk.Combobox(frame2, values=val, state="readonly", font=('Arial', 10))
     tests.grid(row=0, column=1, ipadx=0, ipady=2)
-    Button(frame2, text="Add", font=my_font, command=list_func, bg="#4c78be", fg="white").grid(row=0, column=2, ipadx=17, ipady=0)
-    Button(frame2, text="Remove", font=my_font, command=remove_func, bg="#4c78be", fg="white").grid(row=0, column=3, ipadx=5, ipady=0)
+    Button(frame2, text="Add", font=my_font, command=list_func, bg="#4c78be", fg="white").grid(row=0, column=2, ipadx=17, ipady=1)
+    Button(frame2, text="Remove", font=my_font, command=remove_func, bg="#4c78be", fg="white").grid(row=0, column=3, ipadx=1, ipady=1)
 
     list = Listbox(frame2, height=10, width=60)
     list.grid(row=2, column=0, ipadx=0, ipady=0, columnspan=4)
 
-    Label(frame2, text= "  ", bg="#abcbff").grid(row=3, column=0, ipadx=1, ipady=1)
-    Label(frame2, text= "Total  →", font=my_font, anchor="e", bg="#abcbff").grid(row=3, column=1, ipadx=1, ipady=1)
-    t = Label(frame2, font=my_font, borderwidth=2, text="0000", relief='sunken', bg="#ffffff").grid(row=3, column=2, ipadx=1, ipady=1)
-    Button(frame2, text="Calculate", font=my_font, command=remove_func, bg="#4c78be", fg="white").grid(row=3, column=3, ipadx=1, ipady=1)
+    def txt():
+        test_list = list.get(0, END)
+        lebel_calc = t.get()
+        if lebel_calc:
+            t.delete(0, END)
+            return data_logic.calculate(test_list)
+        else:
+            return data_logic.calculate(test_list)
+        
+    Label(frame2, text= "Total→", font=my_font, anchor="e", bg="#abcbff").grid(row=3, column=0, ipadx=1, ipady=1)
+    t = Entry(frame2, font=('Arial', 10))
+    t.grid(row=3, column=1, ipadx=1, ipady=1)
+    Button(frame2, text="Calculate", font=my_font, command=txt, bg="#4c78be", fg="white").grid(row=3, column=2, ipadx=1, ipady=1)
 
+    def txt():
+        test_list = list.get(0, END)
+        lebel_calc = t.get()
+        if lebel_calc:
+            t.delete(0, END)
+            return data_logic.calculate(test_list)
+        else:
+            return data_logic.calculate(test_list)
+        
     def clear_all():
         da = date.get()
         if da:
