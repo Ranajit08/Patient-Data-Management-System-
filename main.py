@@ -21,7 +21,7 @@ def gui():
 
     window.title("PATIENT DATA MANAGEMENT SYSTEM")
     my_font = font.Font(family='Arial', size=11, weight="bold")
-    window.geometry("550x500")
+    window.geometry("1400x1500")
     window.config(bg="#abcbff")
 
     style = ttk.Style()
@@ -57,8 +57,8 @@ def gui():
 
     date = Entry(frame1, font=('Arial', 11))
     date.grid(row=1, column=1, ipadx=1, ipady=1)
-    d = data_logic.datev()
-    date.insert(0, d)
+    date_i = data_logic.datev()
+    date.insert(0, date_i)
     name = Entry(frame1, font=('Arial', 11))
     name.grid(row=2, column=1, ipadx=1, ipady=1)
     age = Entry(frame1, font=('Arial', 11))
@@ -86,36 +86,29 @@ def gui():
     list = Listbox(frame2, height=10, width=60)
     list.grid(row=2, column=0, ipadx=0, ipady=0, columnspan=4)
 
-    def txt():
+    def calculate():
         test_list = list.get(0, END)
         lebel_calc = t.get()
         if lebel_calc:
             t.delete(0, END)
-            return data_logic.calculate(test_list)
+            calc = data_logic.calculate(test_list)
+            t.insert(0, calc)
         else:
-            return data_logic.calculate(test_list)
-        
+            e_clac =  data_logic.calculate(test_list)
+            t.insert(0, e_clac)
+            
     Label(frame2, text= "Total→", font=my_font, anchor="e", bg="#abcbff").grid(row=3, column=0, ipadx=1, ipady=1)
     t = Entry(frame2, font=('Arial', 10))
     t.grid(row=3, column=1, ipadx=1, ipady=1)
-    Button(frame2, text="Calculate", font=my_font, command=txt, bg="#4c78be", fg="white").grid(row=3, column=2, ipadx=1, ipady=1)
+    Button(frame2, text="Calculate", font=my_font, command=calculate, bg="#4c78be", fg="white").grid(row=3, column=2, ipadx=1, ipady=1)
 
-    def txt():
-        test_list = list.get(0, END)
-        lebel_calc = t.get()
-        if lebel_calc:
-            t.delete(0, END)
-            return data_logic.calculate(test_list)
-        else:
-            return data_logic.calculate(test_list)
-        
     def clear_all():
-        da = date.get()
-        if da:
+        date_12 = date.get()
+        if date_12:
             date.delete(0, END)
-            date.insert(0, d)
+            date.insert(0, date_i)
         else:
-            date.insert(0, d)
+            date.insert(0, date_i)
         n = name.get()
         if n:
             name.delete(0, END)
@@ -144,8 +137,11 @@ def gui():
         i_list = list.get(0, END)
 
         if all([ i_date, i_name, i_age, i_gender, i_address, i_ph, i_center, i_list]):
-            print("all right.")
-        
+            bool = data_logic.save_data([i_date, i_name, i_age, i_gender, i_ph, i_center, i_list, i_address])
+            if bool == True:
+                messagebox.showinfo("Save", "Data successfully saved :)")
+            if bool == False:
+                messagebox.showwarning("Save", "Some problem occurs :(")
         else:
             if i_date and not any([i_name, i_age, i_gender, i_address, i_ph, i_center, i_list]):
                 messagebox.showerror("Error", "Some fields are blank :(")
@@ -158,10 +154,22 @@ def gui():
     Label(frame4, text="", bg="#abcbff").grid(row=0, column=0, ipadx=15, ipady=0, columnspan=5)
     Button(frame4, text="Clear All", font=my_font, bg="#4c78be", fg="white", command=clear_all).grid(row=1, column=0, ipadx=5, ipady=0)
     Label(frame4, text="", bg="#abcbff").grid(row=1, column=1, ipadx=15, ipady=0)
-    Button(frame4, text="Print", font=my_font, bg="#4c78be", fg="white").grid(row=1, column=2, ipadx=5, ipady=0)
+    Button(frame4, text="Print", font=my_font, bg="#4c78be", fg="white", command=data_logic.pdf).grid(row=1, column=2, ipadx=5, ipady=0)
     Label(frame4, text="", bg="#abcbff").grid(row=1, column=3, ipadx=15, ipady=0)
     Button(frame4, text="Save", font=my_font, bg="#4c78be", fg="white", command=save).grid(row=1, column=4, ipadx=5, ipady=0)
     
+
+    tab2_frame = Frame(tab2, bg="#abcbff" )
+    tab2_frame.pack(expand = True)
+    
+    frame1_tab2 = Frame(tab2_frame, bg="#abcbff")
+    frame1_tab2.grid(row=0, column=0, ipadx=1, ipady=1)
+
+    l = Text(frame1_tab2, height=50, width=170, wrap="word")
+    l.grid(row=1, column=0, ipadx=0, ipady=0, columnspan=4)
+    d = data_logic.user_data()
+    l.insert(END, d)
+    l.config(state="disabled")
 
 
     window.mainloop()
