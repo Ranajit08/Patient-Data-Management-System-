@@ -164,12 +164,27 @@ def gui():
     
     frame1_tab2 = Frame(tab2_frame, bg="#abcbff")
     frame1_tab2.grid(row=0, column=0, ipadx=1, ipady=1)
+    d = data_logic.user_data()
 
     l = Text(frame1_tab2, height=50, width=170, wrap="word")
-    l.grid(row=1, column=0, ipadx=0, ipady=0, columnspan=4)
-    d = data_logic.user_data()
-    l.insert(END, d)
-    l.config(state="disabled")
+    l.grid(row=1, column=0, ipadx=0, ipady=0, columnspan=5)
+
+    def refresh():
+        text = l.get()
+        if text:
+            l.delete(0, END)
+            l.insert(END, d)
+        else:
+            l.insert(END, d)
+    
+    refresh = Button(frame1_tab2, text="Refresh", font=my_font, bg="#4c78be", fg="White", command=refresh)
+    refresh.grid(row=0, column=0, ipadx=5, ipady=5)
+    Label(frame1_tab2, text="SEARCH BY: ", font=my_font, bg="#abcbff").grid(row=0, column=1, ipadx=5, ipady=5)
+    search_option = ttk.Combobox(frame1_tab2, values=["id","date","name"], state="readonly", font=my_font)
+    search_option.grid(row=0, column=2, ipadx=5, ipady=5)
+    Label(frame1_tab2, text="WHERE", font=my_font, bg="#abcbff").grid(row= 0, column= 3, ipadx=5, ipady=5)
+    search_entry = Entry(frame1_tab2, font=my_font).grid(row=0, column=4, ipadx=5, ipady=5)
+
 
 
     window.mainloop()
